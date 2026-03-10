@@ -13,11 +13,10 @@
             display: flex; 
             flex-wrap: wrap;
             gap: 20px; 
-            background: #121212; /* Темный фон страницы */
+            background: #121212; 
             color: #e0e0e0;
         }
         
-        /* Стили для шапки с логотипом */
         header {
             width: 100%;
             display: flex;
@@ -25,14 +24,34 @@
             gap: 15px;
             margin-bottom: 5px;
         }
+        
+        /* Стили для кликабельного пульсирующего логотипа */
+        .logo-link {
+            display: block;
+            border-radius: 50%;
+            text-decoration: none;
+            outline: none;
+        }
         .logo-img {
             width: 70px;
             height: 70px;
             object-fit: cover;
             border-radius: 50%;
-            border: 2px solid #ff6600;
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.6);
+            cursor: pointer;
+            animation: softPulse 2s infinite;
+            transition: transform 0.2s ease;
         }
+        .logo-img:hover {
+            animation: none; /* Останавливаем пульсацию при наведении */
+            transform: scale(1.1); /* Слегка увеличиваем */
+        }
+        
+        @keyframes softPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
         .header-text h1 {
             margin: 0;
             color: #ff6600;
@@ -46,7 +65,6 @@
             font-size: 16px;
         }
 
-        /* Стили панелей с оранжевым неоном */
         .panel { 
             background: #1e1e1e; 
             padding: 25px; 
@@ -65,8 +83,7 @@
         }
         label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; color: #ccc; }
         
-        /* Темные поля ввода */
-        textarea, input[type="text"], select, input[type="number"] { 
+        input[type="text"], select, input[type="number"] { 
             width: 100%; 
             margin-top: 8px; 
             padding: 10px; 
@@ -79,12 +96,65 @@
             font-size: 14px;
             transition: border 0.3s, box-shadow 0.3s;
         }
-        textarea:focus, input[type="text"]:focus, select:focus, input[type="number"]:focus {
+        input[type="text"]:focus, select:focus, input[type="number"]:focus {
             outline: none;
             border-color: #ff6600;
             box-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
         }
-        textarea { height: 120px; resize: vertical; }
+        
+        .editor-toolbar {
+            display: flex;
+            gap: 5px;
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 6px 6px 0 0;
+            border: 1px solid #444;
+            border-bottom: none;
+            margin-top: 8px;
+        }
+        .editor-toolbar button {
+            background: #333;
+            color: #ccc;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: none;
+            width: auto;
+            margin-top: 0;
+        }
+        .editor-toolbar button:hover {
+            background: #ff6600;
+            color: #121212;
+            border-color: #ff6600;
+        }
+        .editor-divider {
+            width: 1px;
+            background: #555;
+            margin: 0 5px;
+        }
+        
+        .editor-area {
+            width: 100%; 
+            height: 160px; 
+            padding: 10px; 
+            box-sizing: border-box; 
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444; 
+            border-radius: 0 0 6px 6px; 
+            font-family: inherit;
+            font-size: 14px;
+            overflow-y: auto;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .editor-area:focus {
+            outline: none;
+            border-color: #ff6600;
+            box-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+        }
+
         .row { display: flex; gap: 15px; }
         .row > div { flex: 1; }
         .color-picker { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
@@ -92,8 +162,17 @@
         .checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 15px; }
         .checkbox-group label { margin: 0; font-weight: normal; cursor: pointer;}
         
-        /* Неоновая кнопка */
-        button { 
+        .hint-box { 
+            background: #222; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+            margin-top: 10px; 
+            margin-bottom: 5px;
+        }
+        .hint-box span { display: block; }
+
+        .btn-copy { 
             margin-top: auto; 
             padding: 15px 20px; 
             background: transparent; 
@@ -109,12 +188,12 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        button:hover { 
+        .btn-copy:hover { 
             background: #ff6600; 
             color: #121212;
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
         }
-        button:active { transform: scale(0.98); }
+        .btn-copy:active { transform: scale(0.98); }
         
         #preview-wrapper { 
             width: 100%; 
@@ -125,7 +204,7 @@
             margin-top: 15px; 
             padding: 10px;
             box-sizing: border-box;
-            background: #ffffff; /* Белый фон для имитации слайда Genially */
+            background: #ffffff; 
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
         #preview-container {
@@ -135,7 +214,6 @@
             overflow: auto; 
         }
         
-        /* Кастомный скроллбар для самого генератора (под темную тему) */
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #121212; }
         ::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; border: 2px solid #121212; }
@@ -145,7 +223,9 @@
 <body>
 
     <header>
-        <img src="logo.png" alt="Логотип" class="logo-img" onerror="this.style.display='none'">
+        <a href="https://t.me/interactiv_matematika" target="_blank" class="logo-link" title="Перейти в Telegram-канал">
+            <img src="logo.png" alt="Логотип" class="logo-img" onerror="this.style.display='none'">
+        </a>
         <div class="header-text">
             <h1>Шкатулка интерактивов</h1>
             <p>Светлана Быкова</p>
@@ -155,9 +235,31 @@
     <div class="panel">
         <h2>Настройки блока</h2>
         
-        <label>Текст (можно использовать абзацы):</label>
-        <textarea id="textContent">Вставьте сюда текст.
-Он будет плавно прокручиваться внутри рамки.</textarea>
+        <label>Текст (можно выделять и форматировать):</label>
+        
+        <div class="hint-box">
+            <span style="color: #ff9f43; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Как вставить картинки:</span>
+            <span style="color: #aaa; font-size: 13px;">Вставьте в текст: <b>[картинка: ссылка]</b><br>
+            Для изменения размера добавьте ширину: <b>[картинка: ссылка | 50]</b></span>
+        </div>
+
+        <div class="editor-toolbar">
+            <button type="button" onclick="formatText('bold')" title="Жирный"><b>Ж</b></button>
+            <button type="button" onclick="formatText('italic')" title="Курсив"><i>К</i></button>
+            <button type="button" onclick="formatText('underline')" title="Подчеркнутый"><u>Ч</u></button>
+            <div class="editor-divider"></div>
+            <button type="button" onclick="formatText('justifyLeft')" title="По левому краю">⬅️</button>
+            <button type="button" onclick="formatText('justifyCenter')" title="По центру">↔️</button>
+            <button type="button" onclick="formatText('justifyRight')" title="По правому краю">➡️</button>
+            <button type="button" onclick="formatText('justifyFull')" title="По ширине">📄</button>
+        </div>
+        
+        <div id="textContent" class="editor-area" contenteditable="true">
+            Текст вашей <b>задачи</b>...<br><br>
+            [картинка: https://img.freepik.com/free-vector/hand-drawn-math-elements-background_23-2148152144.jpg | 60]<br><br>
+            <div style="text-align: center;"><i>Продолжение текста под первой картинкой (по центру). Можно добавить еще одну:</i></div><br>
+            [картинка: https://img.freepik.com/free-vector/math-background_23-2148146270.jpg | 40]
+        </div>
 
         <div class="row">
             <div>
@@ -191,9 +293,6 @@
             </div>
         </div>
 
-        <label>Ссылка на картинку (если нужно):</label>
-        <input type="text" id="imgUrl" placeholder="https://... (оставьте пустым, если картинка не нужна)">
-
         <div class="row">
             <div>
                 <label>Цвет фона и текста:</label>
@@ -220,7 +319,7 @@
         </div>
 
         <br><br>
-        <button onclick="copyCode()" id="copyBtn">Скопировать код</button>
+        <button class="btn-copy" onclick="copyCode()" id="copyBtn">Скопировать код</button>
     </div>
 
     <div class="panel">
@@ -244,19 +343,34 @@
             generateCode();
         });
 
-        const inputs = document.querySelectorAll('input, textarea, select');
+        const editorArea = document.getElementById('textContent');
+        editorArea.addEventListener('input', generateCode);
+
+        const inputs = document.querySelectorAll('input, select');
         inputs.forEach(input => {
             input.addEventListener('input', generateCode);
         });
 
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            editorArea.focus();
+            generateCode();
+        }
+
         function generateCode() {
-            const text = document.getElementById('textContent').value.replace(/\n/g, '<br>');
+            let text = editorArea.innerHTML;
+            
+            text = text.replace(/\[картинка:\s*([^\]|]+)(?:\s*\|\s*(\d+))?\s*\]/gi, (match, url, width) => {
+                const cleanUrl = url.replace(/(<([^>]+)>)/gi, "").trim();
+                const cleanWidth = width ? width.replace(/(<([^>]+)>)/gi, "").trim() : '100';
+                return `<img src="${cleanUrl}" style="width: ${cleanWidth}%; height: auto; border-radius: 8px; margin: 15px auto; display: block;" alt="Изображение">`;
+            });
+
             const fontSelect = document.getElementById('fontFamily');
             const fontFamily = fontSelect.value;
             const googleFontName = fontSelect.options[fontSelect.selectedIndex].getAttribute('data-gf');
             const fontSize = document.getElementById('fontSize').value;
             
-            const imgUrl = document.getElementById('imgUrl').value;
             let bgColor = document.getElementById('bgColor').value;
             const isTransparent = document.getElementById('transparentBg').checked;
             const textColor = document.getElementById('textColor').value;
@@ -271,8 +385,6 @@
             if (isNeon) {
                 neonStyle = `box-shadow: 0 0 10px ${neonColor}, 0 0 20px ${neonColor}, inset 0 0 10px ${neonColor}; border: 2px solid ${neonColor};`;
             }
-
-            let imgHtml = imgUrl ? `<img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px; display: block;" alt="Изображение">` : '';
 
             let fontImport = '';
             if (googleFontName) {
@@ -293,12 +405,12 @@
                 .scroll-container {
                     width: 100vw; height: 100vh; overflow-y: auto; background: ${bgColor}; color: ${textColor}; padding: 20px; box-sizing: border-box; border-radius: 12px; ${neonStyle};
                 }
+                .content { font-family: ${fontFamily}; line-height: 1.6; font-size: ${fontSize}px; }
             </style>
             </head>
             <body>
                 <div class="scroll-container">
-                    ${imgHtml}
-                    <div style="font-family: ${fontFamily}; line-height: 1.6; font-size: ${fontSize}px;">
+                    <div class="content">
                         ${text}
                     </div>
                 </div>
