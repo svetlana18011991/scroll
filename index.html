@@ -172,7 +172,6 @@
         .hint-box span { display: block; }
 
         .btn-copy { 
-            margin-top: auto; 
             padding: 15px 20px; 
             background: transparent; 
             color: #ff6600; 
@@ -193,6 +192,23 @@
             box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
         }
         .btn-copy:active { transform: scale(0.98); }
+        
+        /* Кнопка сброса */
+        .btn-reset {
+            padding: 8px 12px;
+            background: transparent;
+            color: #ff5b6b;
+            border: 1px solid #ff5b6b;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .btn-reset:hover {
+            background: rgba(255, 91, 107, 0.15);
+            box-shadow: 0 0 8px rgba(255, 91, 107, 0.4);
+        }
         
         #preview-wrapper { 
             width: 100%; 
@@ -313,6 +329,17 @@
         </div>
 
         <br><br>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+            <div style="display:flex; flex-direction:column; gap:6px; width: 65%;">
+               <span id="lblSizeText" style="font-size:12px; font-weight:bold; color:#33d17a;">🟢 Код в норме</span>
+               <div style="width:100%; background:rgba(0,0,0,0.5); border:1px solid #444; height:6px; border-radius:3px; overflow:hidden;">
+                  <div id="barSize" style="width:0%; height:100%; background:#33d17a; transition: width 0.3s, background 0.3s;"></div>
+               </div>
+            </div>
+            <button class="btn-reset" onclick="resetAll()">🗑 Сбросить всё</button>
+        </div>
+
         <button class="btn-copy" onclick="copyCode()" id="copyBtn">Скопировать код</button>
     </div>
 
@@ -348,6 +375,47 @@
         function formatText(command) {
             document.execCommand(command, false, null);
             editorArea.focus();
+            generateCode();
+        }
+
+        // Функция проверки размера кода
+        function checkCodeSize(codeStr) {
+            const maxLen = 25000; // Безопасный лимит для Genially
+            const curLen = codeStr.length;
+            const pct = Math.min(100, (curLen / maxLen) * 100);
+            
+            const bar = document.getElementById("barSize");
+            const lblText = document.getElementById("lblSizeText");
+            
+            if (bar) bar.style.width = pct + "%";
+            
+            if (curLen < maxLen * 0.75) {
+                if(bar) bar.style.background = "#33d17a";
+                if(lblText) { lblText.textContent = "🟢 Код в норме (" + curLen + " симв.)"; lblText.style.color = "#33d17a"; }
+            } else if (curLen <= maxLen) {
+                if(bar) bar.style.background = "#d99a29";
+                if(lblText) { lblText.textContent = "🟡 Почти лимит (" + curLen + " симв.)"; lblText.style.color = "#d99a29"; }
+            } else {
+                if(bar) bar.style.background = "#ff5b6b";
+                if(lblText) { lblText.textContent = "🔴 ПРЕВЫШЕН ЛИМИТ (" + curLen + " симв.)"; lblText.style.color = "#ff5b6b"; }
+            }
+        }
+
+        // Функция полного сброса
+        function resetAll() {
+            if(!confirm("Точно сбросить все настройки и удалить текст? Это нельзя отменить.")) return;
+            
+            editorArea.innerHTML = "Ваш текст<br>[картинка: ссылка на картинку | 20]<br>ваш текст<br>[картинка: ссылка на картинку | 20]";
+            document.getElementById('fontFamily').value = "'Open Sans', sans-serif";
+            document.getElementById('fontSize').value = "18";
+            document.getElementById('bgColor').value = "#ffffff";
+            document.getElementById('textColor').value = "#2d3436";
+            document.getElementById('transparentBg').checked = false;
+            
+            neonCheckbox.checked = false;
+            document.getElementById('neonColor').value = "#ff6600";
+            neonColorGroup.style.display = 'none';
+            
             generateCode();
         }
 
@@ -414,7 +482,12 @@
 
             const escapedHTML = innerHTML.replace(/"/g, '&quot;');
             currentHtmlCode = `<iframe style="width: 100%; height: 100%; border: none; background: transparent;" srcdoc="${escapedHTML}"></iframe>`;
+            
+            // Обновляем предпросмотр
             document.getElementById('preview-content').innerHTML = currentHtmlCode;
+            
+            // Проверяем и показываем размер кода
+            checkCodeSize(currentHtmlCode);
         }
 
         function copyCode() {
