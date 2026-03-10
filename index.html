@@ -11,64 +11,122 @@
             padding: 20px; 
             margin: 0;
             display: flex; 
+            flex-wrap: wrap;
             gap: 20px; 
-            background: #f4f7f6; 
-            color: #333;
+            background: #121212; /* Темный фон страницы */
+            color: #e0e0e0;
         }
+        
+        /* Стили для шапки с логотипом */
+        header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ff6600;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.6);
+        }
+        .header-text h1 {
+            margin: 0;
+            color: #ff6600;
+            font-size: 26px;
+            text-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+            letter-spacing: 0.5px;
+        }
+        .header-text p {
+            margin: 4px 0 0 0;
+            color: #b3b3b3;
+            font-size: 16px;
+        }
+
+        /* Стили панелей с оранжевым неоном */
         .panel { 
-            background: white; 
+            background: #1e1e1e; 
             padding: 25px; 
             border-radius: 12px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.05); 
-            width: 50%; 
+            width: calc(50% - 10px); 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            border: 1px solid #ff6600;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2), inset 0 0 10px rgba(255, 102, 0, 0.1);
         }
-        h2 { margin-top: 0; color: #2c3e50; }
-        label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; }
+        h2 { 
+            margin-top: 0; 
+            color: #ff6600; 
+            text-shadow: 0 0 5px rgba(255, 102, 0, 0.3);
+        }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; color: #ccc; }
+        
+        /* Темные поля ввода */
         textarea, input[type="text"], select, input[type="number"] { 
             width: 100%; 
             margin-top: 8px; 
             padding: 10px; 
             box-sizing: border-box; 
-            border: 1px solid #dcdde1; 
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444; 
             border-radius: 6px; 
             font-family: inherit;
             font-size: 14px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        textarea:focus, input[type="text"]:focus, select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #ff6600;
+            box-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
         }
         textarea { height: 120px; resize: vertical; }
         .row { display: flex; gap: 15px; }
         .row > div { flex: 1; }
         .color-picker { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-        input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; border-radius: 4px; padding: 0; }
+        input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; border-radius: 4px; padding: 0; background: transparent; }
         .checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 15px; }
         .checkbox-group label { margin: 0; font-weight: normal; cursor: pointer;}
+        
+        /* Неоновая кнопка */
         button { 
             margin-top: auto; 
             padding: 15px 20px; 
-            background: #00b894; 
-            color: white; 
-            border: none; 
+            background: transparent; 
+            color: #ff6600; 
+            border: 2px solid #ff6600; 
             border-radius: 6px; 
             cursor: pointer; 
             font-size: 16px; 
             font-weight: 600;
             width: 100%; 
-            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        button:hover { background: #55efc4; }
+        button:hover { 
+            background: #ff6600; 
+            color: #121212;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
+        }
         button:active { transform: scale(0.98); }
+        
         #preview-wrapper { 
             width: 100%; 
             flex-grow: 1;
             min-height: 400px; 
-            border: 2px dashed #b2bec3; 
+            border: 2px dashed #ff6600; 
             border-radius: 8px;
             margin-top: 15px; 
             padding: 10px;
             box-sizing: border-box;
-            background: #dfe6e9; 
+            background: #ffffff; /* Белый фон для имитации слайда Genially */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
         #preview-container {
             width: 100%;
@@ -76,9 +134,23 @@
             resize: both; 
             overflow: auto; 
         }
+        
+        /* Кастомный скроллбар для самого генератора (под темную тему) */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; border: 2px solid #121212; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff6600; }
     </style>
 </head>
 <body>
+
+    <header>
+        <img src="logo.png" alt="Логотип" class="logo-img" onerror="this.style.display='none'">
+        <div class="header-text">
+            <h1>Шкатулка интерактивов</h1>
+            <p>Светлана Быкова</p>
+        </div>
+    </header>
 
     <div class="panel">
         <h2>Настройки блока</h2>
@@ -134,26 +206,26 @@
 
         <div class="checkbox-group">
             <input type="checkbox" id="transparentBg">
-            <label for="transparentBg">Сделать фон прозрачным</label>
+            <label for="transparentBg" style="margin-top: 0;">Сделать фон прозрачным</label>
         </div>
 
         <div class="checkbox-group">
             <input type="checkbox" id="neonGlow">
-            <label for="neonGlow">Включить неоновое свечение рамки</label>
+            <label for="neonGlow" style="margin-top: 0;">Включить неоновое свечение рамки</label>
         </div>
         
         <div id="neonColorGroup" style="display:none;">
             <label>Цвет свечения:</label>
-            <input type="color" id="neonColor" value="#00cec9">
+            <input type="color" id="neonColor" value="#ff6600">
         </div>
 
         <br><br>
-        <button onclick="copyCode()" id="copyBtn">Скопировать код для Genially</button>
+        <button onclick="copyCode()" id="copyBtn">Скопировать код</button>
     </div>
 
     <div class="panel">
         <h2>Предпросмотр</h2>
-        <p style="color: #636e72; font-size: 0.9em; margin-top: 0;">Растяните серый квадратик за правый нижний угол, чтобы проверить скролл.</p>
+        <p style="color: #888; font-size: 0.9em; margin-top: 0;">Растяните блок за правый нижний угол, чтобы проверить скролл.</p>
         <div id="preview-wrapper">
             <div id="preview-container">
                 <div id="preview-content" style="height: 100%;"></div>
@@ -207,7 +279,6 @@
                 fontImport = `@import url('https://fonts.googleapis.com/css2?family=${googleFontName}&display=swap');`;
             }
 
-            // Создаем полноценный внутренний HTML документ для фрейма
             const innerHTML = `
             <!DOCTYPE html>
             <html>
@@ -235,12 +306,8 @@
             </html>
             `;
 
-            // Экранируем кавычки, чтобы код не сломался внутри атрибута srcdoc
             const escapedHTML = innerHTML.replace(/"/g, '&quot;');
-
-            // Итоговый код теперь обернут в тег iframe
             currentHtmlCode = `<iframe style="width: 100%; height: 100%; border: none; background: transparent;" srcdoc="${escapedHTML}"></iframe>`;
-
             document.getElementById('preview-content').innerHTML = currentHtmlCode;
         }
 
@@ -254,11 +321,15 @@
             
             const btn = document.getElementById('copyBtn');
             const originalText = btn.innerText;
-            btn.innerText = '✓ Скопировано! Можно вставлять в Genially';
-            btn.style.background = '#0984e3'; 
+            btn.innerText = '✓ Скопировано!';
+            btn.style.background = '#ff6600'; 
+            btn.style.color = '#121212';
+            btn.style.boxShadow = '0 0 20px rgba(255, 102, 0, 0.8)';
             setTimeout(() => { 
                 btn.innerText = originalText; 
-                btn.style.background = '#00b894';
+                btn.style.background = 'transparent';
+                btn.style.color = '#ff6600';
+                btn.style.boxShadow = '0 0 10px rgba(255, 102, 0, 0.3)';
             }, 2500);
         }
 
