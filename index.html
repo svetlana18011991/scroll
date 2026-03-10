@@ -45,7 +45,7 @@
         .checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 15px; }
         .checkbox-group label { margin: 0; font-weight: normal; cursor: pointer;}
         button { 
-            margin-top: auto; /* Прижимает кнопку к низу панели */
+            margin-top: auto; 
             padding: 15px 20px; 
             background: #00b894; 
             color: white; 
@@ -68,7 +68,7 @@
             margin-top: 15px; 
             padding: 10px;
             box-sizing: border-box;
-            background: #dfe6e9; /* Имитация фона Genially */
+            background: #dfe6e9; 
         }
         #preview-container {
             width: 100%;
@@ -162,7 +162,7 @@
     </div>
 
     <script>
-        let currentHtmlCode = ""; // Переменная для хранения готового кода
+        let currentHtmlCode = "";
 
         const neonCheckbox = document.getElementById('neonGlow');
         const neonColorGroup = document.getElementById('neonColorGroup');
@@ -172,7 +172,6 @@
             generateCode();
         });
 
-        // Слушаем изменения во всех полях
         const inputs = document.querySelectorAll('input, textarea, select');
         inputs.forEach(input => {
             input.addEventListener('input', generateCode);
@@ -203,33 +202,49 @@
 
             let imgHtml = imgUrl ? `<img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px; display: block;" alt="Изображение">` : '';
 
-            // Подключение Google шрифта только если он выбран
             let fontImport = '';
             if (googleFontName) {
                 fontImport = `@import url('https://fonts.googleapis.com/css2?family=${googleFontName}&display=swap');`;
             }
 
-            // Итоговый код
-            currentHtmlCode = `
-<div style="width: 100%; height: 100%; overflow-y: auto; background: ${bgColor}; color: ${textColor}; padding: 20px; box-sizing: border-box; border-radius: 12px; ${neonStyle}">
-    <style>
-        ${fontImport}
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(136, 136, 136, 0.4); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(136, 136, 136, 0.7); }
-    </style>
-    ${imgHtml}
-    <div style="font-family: ${fontFamily}; line-height: 1.6; font-size: ${fontSize}px;">${text}</div>
-</div>
-            `.trim();
+            // Создаем полноценный внутренний HTML документ для фрейма
+            const innerHTML = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+            <style>
+                ${fontImport}
+                ::-webkit-scrollbar { width: 8px; }
+                ::-webkit-scrollbar-track { background: transparent; }
+                ::-webkit-scrollbar-thumb { background: rgba(136, 136, 136, 0.4); border-radius: 10px; }
+                ::-webkit-scrollbar-thumb:hover { background: rgba(136, 136, 136, 0.7); }
+                body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+                .scroll-container {
+                    width: 100vw; height: 100vh; overflow-y: auto; background: ${bgColor}; color: ${textColor}; padding: 20px; box-sizing: border-box; border-radius: 12px; ${neonStyle};
+                }
+            </style>
+            </head>
+            <body>
+                <div class="scroll-container">
+                    ${imgHtml}
+                    <div style="font-family: ${fontFamily}; line-height: 1.6; font-size: ${fontSize}px;">
+                        ${text}
+                    </div>
+                </div>
+            </body>
+            </html>
+            `;
 
-            // Обновляем предпросмотр (шрифты для предпросмотра уже подключены в <head>)
+            // Экранируем кавычки, чтобы код не сломался внутри атрибута srcdoc
+            const escapedHTML = innerHTML.replace(/"/g, '&quot;');
+
+            // Итоговый код теперь обернут в тег iframe
+            currentHtmlCode = `<iframe style="width: 100%; height: 100%; border: none; background: transparent;" srcdoc="${escapedHTML}"></iframe>`;
+
             document.getElementById('preview-content').innerHTML = currentHtmlCode;
         }
 
         function copyCode() {
-            // Создаем временный элемент для копирования текста в буфер
             const tempTextArea = document.createElement("textarea");
             tempTextArea.value = currentHtmlCode;
             document.body.appendChild(tempTextArea);
@@ -237,18 +252,16 @@
             document.execCommand("copy");
             document.body.removeChild(tempTextArea);
             
-            // Визуальный отклик на кнопке
             const btn = document.getElementById('copyBtn');
             const originalText = btn.innerText;
             btn.innerText = '✓ Скопировано! Можно вставлять в Genially';
-            btn.style.background = '#0984e3'; // Меняем цвет для эффекта
+            btn.style.background = '#0984e3'; 
             setTimeout(() => { 
                 btn.innerText = originalText; 
                 btn.style.background = '#00b894';
             }, 2500);
         }
 
-        // Запуск генерации при старте
         generateCode();
     </script>
 </body>
