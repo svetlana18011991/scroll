@@ -1,1 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор скролл-блока для Genially</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 20px; 
+            margin: 0;
+            display: flex; 
+            gap: 20px; 
+            background: #f4f7f6; 
+            color: #333;
+        }
+        .panel { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05); 
+            width: 50%; 
+            box-sizing: border-box;
+        }
+        h2 { margin-top: 0; color: #2c3e50; }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; }
+        textarea, input[type="text"] { 
+            width: 100%; 
+            margin-top: 8px; 
+            padding: 10px; 
+            box-sizing: border-box; 
+            border: 1px solid #dcdde1; 
+            border-radius: 6px; 
+            font-family: inherit;
+        }
+        textarea { height: 120px; resize: vertical; }
+        .color-picker { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; border-radius: 4px; padding: 0; }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 15px; }
+        .checkbox-group label { margin: 0; font-weight: normal; cursor: pointer;}
+        button { 
+            margin-top: 25px; 
+            padding: 12px 20px; 
+            background: #0984e3; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: 600;
+            width: 100%; 
+            transition: background 0.2s;
+        }
+        button:hover { background: #74b9ff; }
+        .btn-success { background: #00b894; }
+        .btn-success:hover { background: #55efc4; }
+        #preview-wrapper { 
+            width: 100%; 
+            height: 400px; 
+            border: 2px dashed #b2bec3; 
+            border-radius: 8px;
+            margin-top: 15px; 
+            padding: 10px;
+            box-sizing: border-box;
+            background: #dfe6e9; /* Имитация фона Genially */
+        }
+        #preview-container {
+            width: 100%;
+            height: 100%;
+            /* Для проверки тянем за уголок */
+            resize: both; 
+            overflow: auto; 
+        }
+    </style>
+</head>
+<body>
 
+    <div class="panel">
+        <h2>Настройки блока</h2>
+        
+        <label>Текст (можно использовать абзацы):</label>
+        <textarea id="textContent">Вставьте сюда текст для ваших учеников.
+Он будет плавно прокручиваться внутри рамки.</textarea>
+
+        <label>Ссылка на картинку (если нужно):</label>
+        <input type="text" id="imgUrl" placeholder="https://... (оставьте пустым, если картинка не нужна)">
+
+        <label>Цвет фона и текста:</label>
+        <div class="color-picker">
+            <input type="color" id="bgColor" value="#ffffff" title="Цвет фона">
+            <input type="color" id="textColor" value="#2d3436" title="Цвет текста">
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="transparentBg">
+            <label for="transparentBg">Сделать фон прозрачным</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="neonGlow">
+            <label for="neonGlow">Включить неоновое свечение рамки</label>
+        </div>
+        
+        <div id="neonColorGroup" style="display:none;">
+            <label>Цвет свечения:</label>
+            <input type="color" id="neonColor" value="#00cec9">
+        </div>
+
+        <label style="margin-top: 25px;">Код для вставки в Genially:</label>
+        <textarea id="outputCode" readonly style="height: 80px; background: #f1f2f6;"></textarea>
+        <button class="btn-success" onclick="copyCode()">Скопировать код</button>
+    </div>
+
+    <div class="panel">
+        <h2>Предпросмотр</h2>
+        <p style="color: #636e72; font-size: 0.9em; margin-top: 0;">Так блок будет выглядеть. Растяните серый квадратик за правый нижний угол, чтобы проверить скролл.</p>
+        <div id="preview-wrapper">
+            <div id="preview-container">
+                <div id="preview-content" style="height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const neonCheckbox = document.getElementById('neonGlow');
+        const neonColorGroup = document.getElementById('neonColorGroup');
+
+        // Показ/скрытие выбора цвета неона
+        neonCheckbox.addEventListener('change', (e) => {
+            neonColorGroup.style.display = e.target.checked ? 'block' : 'none';
+            generateCode();
+        });
+
+        // Автоматическая генерация при любых изменениях
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            if(input.id !== 'outputCode') {
+                input.addEventListener('input', generateCode);
+            }
+        });
+
+        function generateCode() {
+            // Обработка переносов строк в HTML
+            const text = document.getElementById('textContent').value.replace(/\n/g, '<br>');
+            const imgUrl = document.getElementById('imgUrl').value;
+            let bgColor = document.getElementById('bgColor').value;
+            const isTransparent = document.getElementById('transparentBg').checked;
+            const textColor = document.getElementById('textColor').value;
+            const isNeon = document.getElementById('neonGlow').checked;
+            const neonColor = document.getElementById('neonColor').value;
+
+            if (isTransparent) {
+                bgColor = 'transparent';
+            }
+
+            let neonStyle = '';
+            if (isNeon) {
+                neonStyle = `box-shadow: 0 0 10px ${neonColor}, 0 0 20px ${neonColor}, inset 0 0 10px ${neonColor}; border: 2px solid ${neonColor};`;
+            }
+
+            let imgHtml = imgUrl ? `<img src="${imgUrl}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 15px; display: block;" alt="Изображение">` : '';
+
+            // Шаблон итогового кода для Genially
+            const htmlString = `
+<div style="width: 100%; height: 100%; overflow-y: auto; background: ${bgColor}; color: ${textColor}; padding: 20px; box-sizing: border-box; border-radius: 12px; ${neonStyle}">
+    <style>
+        /* Красивый скроллбар */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(136, 136, 136, 0.4); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(136, 136, 136, 0.7); }
+    </style>
+    ${imgHtml}
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; font-size: 18px;">${text}</div>
+</div>
+            `.trim();
+
+            // Обновляем предпросмотр
+            document.getElementById('preview-content').innerHTML = htmlString;
+            // Обновляем текстовое поле с кодом
+            document.getElementById('outputCode').value = htmlString;
+        }
+
+        function copyCode() {
+            const codeBlock = document.getElementById('outputCode');
+            codeBlock.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('.btn-success');
+            const originalText = btn.innerText;
+            btn.innerText = '✓ Скопировано!';
+            setTimeout(() => { btn.innerText = originalText; }, 2000);
+        }
+
+        // Инициализация при первой загрузке
+        generateCode();
+    </script>
+</body>
+</html>
