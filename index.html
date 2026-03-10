@@ -25,7 +25,6 @@
             margin-bottom: 5px;
         }
         
-        /* Стили для кликабельного пульсирующего логотипа */
         .logo-link {
             display: block;
             border-radius: 50%;
@@ -42,8 +41,8 @@
             transition: transform 0.2s ease;
         }
         .logo-img:hover {
-            animation: none; /* Останавливаем пульсацию при наведении */
-            transform: scale(1.1); /* Слегка увеличиваем */
+            animation: none; 
+            transform: scale(1.1); 
         }
         
         @keyframes softPulse {
@@ -254,12 +253,7 @@
             <button type="button" onclick="formatText('justifyFull')" title="По ширине">📄</button>
         </div>
         
-        <div id="textContent" class="editor-area" contenteditable="true">
-            Текст вашей <b>задачи</b>...<br><br>
-            [картинка: https://img.freepik.com/free-vector/hand-drawn-math-elements-background_23-2148152144.jpg | 60]<br><br>
-            <div style="text-align: center;"><i>Продолжение текста под первой картинкой (по центру). Можно добавить еще одну:</i></div><br>
-            [картинка: https://img.freepik.com/free-vector/math-background_23-2148146270.jpg | 40]
-        </div>
+        <div id="textContent" class="editor-area" contenteditable="true">Ваш текст<br>[картинка: ссылка на картинку | 20]<br>ваш текст<br>[картинка: ссылка на картинку | 20]</div>
 
         <div class="row">
             <div>
