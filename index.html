@@ -1,626 +1,527 @@
-<iframe style="width: 100%; height: 100%; border: none; background: transparent;" srcdoc="
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор скролл-блока для Genially</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Bad+Script&family=Caveat&family=Comfortaa&family=Comic+Neue&family=Lora&family=Marck+Script&family=Montserrat&family=Neucha&family=Open+Sans&family=Oswald&family=Pacifico&family=Playfair+Display&family=PT+Serif&family=Roboto&family=Roboto+Slab&family=Ubuntu&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 20px; 
+            margin: 0;
+            display: flex; 
+            flex-wrap: wrap;
+            gap: 20px; 
+            background: #121212; 
+            color: #e0e0e0;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+
+        .logo-link {
+            display: block;
+            border-radius: 50%;
+            text-decoration: none;
+            outline: none;
+        }
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 50%;
+            cursor: pointer;
+            animation: softPulse 2s infinite;
+            transition: transform 0.2s ease;
+        }
+        .logo-img:hover {
+            animation: none; 
+            transform: scale(1.1); 
+        }
+
+        @keyframes softPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(255, 255, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        .header-text h1 {
+            margin: 0;
+            color: #ff6600;
+            font-size: 26px;
+            text-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+            letter-spacing: 0.5px;
+        }
+        .header-text p {
+            margin: 4px 0 0 0;
+            color: #b3b3b3;
+            font-size: 16px;
+        }
+
+        .panel { 
+            background: #1e1e1e; 
+            padding: 25px; 
+            border-radius: 12px; 
+            width: calc(50% - 10px); 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ff6600;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2), inset 0 0 10px rgba(255, 102, 0, 0.1);
+        }
+        h2 { 
+            margin-top: 0; 
+            color: #ff6600; 
+            text-shadow: 0 0 5px rgba(255, 102, 0, 0.3);
+        }
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 14px; color: #ccc; }
+
+        input[type="text"], select, input[type="number"] { 
+            width: 100%; 
+            margin-top: 8px; 
+            padding: 10px; 
+            box-sizing: border-box; 
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444; 
+            border-radius: 6px; 
+            font-family: inherit;
+            font-size: 14px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus, select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #ff6600;
+            box-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 5px;
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 6px 6px 0 0;
+            border: 1px solid #444;
+            border-bottom: none;
+            margin-top: 8px;
+        }
+        .editor-toolbar button {
+            background: #333;
+            color: #ccc;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: none;
+            width: auto;
+            margin-top: 0;
+        }
+        .editor-toolbar button:hover {
+            background: #ff6600;
+            color: #121212;
+            border-color: #ff6600;
+        }
+        .editor-divider {
+            width: 1px;
+            background: #555;
+            margin: 0 5px;
+        }
+
+        .editor-area {
+            width: 100%; 
+            height: 160px; 
+            padding: 10px; 
+            box-sizing: border-box; 
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444; 
+            border-radius: 0 0 6px 6px; 
+            font-family: inherit;
+            font-size: 14px;
+            overflow-y: auto;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .editor-area:focus {
+            outline: none;
+            border-color: #ff6600;
+            box-shadow: 0 0 8px rgba(255, 102, 0, 0.5);
+        }
+
+        .row { display: flex; gap: 15px; }
+        .row > div { flex: 1; }
+        .color-picker { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        input[type="color"] { border: none; width: 40px; height: 40px; cursor: pointer; border-radius: 4px; padding: 0; background: transparent; }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 15px; }
+        .checkbox-group label { margin: 0; font-weight: normal; cursor: pointer;}
+
+        .hint-box { 
+            background: #222; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+            margin-top: 10px; 
+            margin-bottom: 5px;
+        }
+        .hint-box span { display: block; }
+
+        .btn-copy { 
+            margin-top: auto; 
+            padding: 15px 20px; 
+            background: transparent; 
+            color: #ff6600; 
+            border: 2px solid #ff6600; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: 600;
+            width: 100%; 
+            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-copy:hover { 
+            background: #ff6600; 
+            color: #121212;
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
+        }
+        .btn-copy:active { transform: scale(0.98); }
+
+        /* Кнопка сброса */
+        .btn-reset {
+            padding: 8px 12px;
+            background: transparent;
+            color: #ff5b6b;
+            border: 1px solid #ff5b6b;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .btn-reset:hover {
+            background: rgba(255, 91, 107, 0.15);
+            box-shadow: 0 0 8px rgba(255, 91, 107, 0.4);
+        }
+        
+        #preview-wrapper { 
+            width: 100%; 
+            flex-grow: 1;
+            min-height: 400px; 
+            border: 2px dashed #ff6600; 
+            border-radius: 8px;
+            margin-top: 15px; 
+            padding: 10px;
+            box-sizing: border-box;
+            background: #ffffff; 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        #preview-container {
+            width: 100%;
+            height: 100%;
+            resize: both; 
+            overflow: auto; 
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; border: 2px solid #121212; }
+        ::-webkit-scrollbar-thumb:hover { background: #ff6600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="https://t.me/interactiv_matematika" target="_blank" class="logo-link" title="Перейти в Telegram-канал">
+            <img src="logo.png" alt="Логотип" class="logo-img" onerror="this.style.display='none'">
+        </a>
+        <div class="header-text">
+            <h1>Шкатулка интерактивов</h1>
+            <p>Светлана Быкова</p>
+        </div>
+    </header>
+
+    <div class="panel">
+        <h2>Настройки блока</h2>
+
+        <label>Текст (можно выделять и форматировать):</label>
+
+        <div class="hint-box">
+            <span style="color: #ff9f43; font-size: 13px; font-weight: bold; margin-bottom: 4px;">Как вставить картинки:</span>
+            <span style="color: #aaa; font-size: 13px;">Вставьте в текст: <b>[картинка: ссылка]</b><br>
+            Для изменения размера добавьте ширину: <b>[картинка: ссылка | 50]</b></span>
+        </div>
+
+        <div class="editor-toolbar">
+            <button type="button" onclick="formatText('bold')" title="Жирный"><b>Ж</b></button>
+            <button type="button" onclick="formatText('italic')" title="Курсив"><i>К</i></button>
+            <button type="button" onclick="formatText('underline')" title="Подчеркнутый"><u>Ч</u></button>
+            <div class="editor-divider"></div>
+            <button type="button" onclick="formatText('justifyLeft')" title="По левому краю">⬅️</button>
+            <button type="button" onclick="formatText('justifyCenter')" title="По центру">↔️</button>
+            <button type="button" onclick="formatText('justifyRight')" title="По правому краю">➡️</button>
+            <button type="button" onclick="formatText('justifyFull')" title="По ширине">📄</button>
+        </div>
+
+        <div id="textContent" class="editor-area" contenteditable="true">Ваш текст<br>[картинка: ссылка на картинку | 20]<br>ваш текст<br>[картинка: ссылка на картинку | 20]</div>
+
+        <div class="row">
+            <div>
+                <label>Шрифт текста:</label>
+                <select id="fontFamily">
+                    <option value="Arial, sans-serif">Arial (Классический)</option>
+                    <option value="Georgia, serif">Georgia (С засечками)</option>
+                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                    <option value="'Roboto', sans-serif" data-gf="Roboto">Roboto</option>
+                    <option value="'Open Sans', sans-serif" data-gf="Open+Sans" selected>Open Sans</option>
+                    <option value="'Montserrat', sans-serif" data-gf="Montserrat">Montserrat</option>
+                    <option value="'Oswald', sans-serif" data-gf="Oswald">Oswald</option>
+                    <option value="'Ubuntu', sans-serif" data-gf="Ubuntu">Ubuntu</option>
+                    <option value="'Lora', serif" data-gf="Lora">Lora (С засечками)</option>
+                    <option value="'PT Serif', serif" data-gf="PT+Serif">PT Serif (С засечками)</option>
+                    <option value="'Playfair Display', serif" data-gf="Playfair+Display">Playfair Display</option>
+                    <option value="'Roboto Slab', serif" data-gf="Roboto+Slab">Roboto Slab</option>
+                    <option value="'Comfortaa', cursive" data-gf="Comfortaa">Comfortaa (Округлый)</option>
+                    <option value="'Caveat', cursive" data-gf="Caveat">Caveat (Рукописный)</option>
+                    <option value="'Pacifico', cursive" data-gf="Pacifico">Pacifico (Каллиграфия)</option>
+                    <option value="'Amatic SC', cursive" data-gf="Amatic+SC">Amatic SC (Тонкий игровой)</option>
+                    <option value="'Comic Neue', cursive" data-gf="Comic+Neue">Comic Neue (Неформальный)</option>
+                    <option value="'Neucha', cursive" data-gf="Neucha">Neucha (Детский)</option>
+                    <option value="'Marck Script', cursive" data-gf="Marck+Script">Marck Script (Элегантный рукописный)</option>
+                    <option value="'Bad Script', cursive" data-gf="Bad+Script">Bad Script (Быстрый почерк)</option>
+                </select>
+            </div>
+            <div>
+                <label>Размер шрифта (px):</label>
+                <input type="number" id="fontSize" value="18" min="10" max="72">
+            </div>
+        </div>
+
+        <div class="row">
+            <div>
+                <label>Цвет фона и текста:</label>
+                <div class="color-picker">
+                    <input type="color" id="bgColor" value="#ffffff" title="Цвет фона">
+                    <input type="color" id="textColor" value="#2d3436" title="Цвет текста">
+                </div>
+            </div>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="transparentBg">
+            <label for="transparentBg" style="margin-top: 0;">Сделать фон прозрачным</label>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="neonGlow">
+            <label for="neonGlow" style="margin-top: 0;">Включить неоновое свечение рамки</label>
+        </div>
+
+        <div id="neonColorGroup" style="display:none;">
+            <label>Цвет свечения:</label>
+            <input type="color" id="neonColor" value="#ff6600">
+        </div>
+
+        <br><br>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+            <div style="display:flex; flex-direction:column; gap:6px; width: 65%;">
+               <span id="lblSizeText" style="font-size:12px; font-weight:bold; color:#33d17a;">🟢 Код в норме</span>
+               <div style="width:100%; background:rgba(0,0,0,0.5); border:1px solid #444; height:6px; border-radius:3px; overflow:hidden;">
+                  <div id="barSize" style="width:0%; height:100%; background:#33d17a; transition: width 0.3s, background 0.3s;"></div>
+               </div>
+            </div>
+            <button class="btn-reset" onclick="resetAll()">🗑 Сбросить всё</button>
+        </div>
+
+        <button class="btn-copy" onclick="copyCode()" id="copyBtn">Скопировать код</button>
+    </div>
+
+    <div class="panel">
+        <h2>Предпросмотр</h2>
+        <p style="color: #888; font-size: 0.9em; margin-top: 0;">Растяните блок за правый нижний угол, чтобы проверить скролл.</p>
+        <div id="preview-wrapper">
+            <div id="preview-container">
+                <div id="preview-content" style="height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentHtmlCode = "";
+
+        const neonCheckbox = document.getElementById('neonGlow');
+        const neonColorGroup = document.getElementById('neonColorGroup');
+
+        neonCheckbox.addEventListener('change', (e) => {
+            neonColorGroup.style.display = e.target.checked ? 'block' : 'none';
+            generateCode();
+        });
+
+        const editorArea = document.getElementById('textContent');
+        editorArea.addEventListener('input', generateCode);
+
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('input', generateCode);
+        });
+
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            editorArea.focus();
+            generateCode();
+        }
+
+        // Функция проверки размера кода
+        function checkCodeSize(codeStr) {
+            const maxLen = 25000; // Безопасный лимит для Genially
+            const curLen = codeStr.length;
+            const pct = Math.min(100, (curLen / maxLen) * 100);
+            
+            const bar = document.getElementById("barSize");
+            const lblText = document.getElementById("lblSizeText");
+            
+            if (bar) bar.style.width = pct + "%";
+            
+            if (curLen < maxLen * 0.75) {
+                if(bar) bar.style.background = "#33d17a";
+                if(lblText) { lblText.textContent = "🟢 Код в норме (" + curLen + " симв.)"; lblText.style.color = "#33d17a"; }
+            } else if (curLen <= maxLen) {
+                if(bar) bar.style.background = "#d99a29";
+                if(lblText) { lblText.textContent = "🟡 Почти лимит (" + curLen + " симв.)"; lblText.style.color = "#d99a29"; }
+            } else {
+                if(bar) bar.style.background = "#ff5b6b";
+                if(lblText) { lblText.textContent = "🔴 ПРЕВЫШЕН ЛИМИТ (" + curLen + " симв.)"; lblText.style.color = "#ff5b6b"; }
+            }
+        }
+
+        // Функция полного сброса
+        function resetAll() {
+            if(!confirm("Точно сбросить все настройки и удалить текст? Это нельзя отменить.")) return;
+            
+            editorArea.innerHTML = "Ваш текст<br>[картинка: ссылка на картинку | 20]<br>ваш текст<br>[картинка: ссылка на картинку | 20]";
+            document.getElementById('fontFamily').value = "'Open Sans', sans-serif";
+            document.getElementById('fontSize').value = "18";
+            document.getElementById('bgColor').value = "#ffffff";
+            document.getElementById('textColor').value = "#2d3436";
+            document.getElementById('transparentBg').checked = false;
+            
+            neonCheckbox.checked = false;
+            document.getElementById('neonColor').value = "#ff6600";
+            neonColorGroup.style.display = 'none';
+            
+            generateCode();
+        }
+
+        function generateCode() {
+            let text = editorArea.innerHTML;
+
+            text = text.replace(/\[картинка:\s*([^\]|]+)(?:\s*\|\s*(\d+))?\s*\]/gi, (match, url, width) => {
+                const cleanUrl = url.replace(/(<([^>]+)>)/gi, "").trim();
+                const cleanWidth = width ? width.replace(/(<([^>]+)>)/gi, "").trim() : '100';
+                return `<img src="${cleanUrl}" style="width: ${cleanWidth}%; height: auto; border-radius: 8px; margin: 15px auto; display: block;" alt="Изображение">`;
+            });
+
+            const fontSelect = document.getElementById('fontFamily');
+            const fontFamily = fontSelect.value;
+            const googleFontName = fontSelect.options[fontSelect.selectedIndex].getAttribute('data-gf');
+            const fontSize = document.getElementById('fontSize').value;
+
+            let bgColor = document.getElementById('bgColor').value;
+            const isTransparent = document.getElementById('transparentBg').checked;
+            const textColor = document.getElementById('textColor').value;
+            const isNeon = document.getElementById('neonGlow').checked;
+            const neonColor = document.getElementById('neonColor').value;
+
+            if (isTransparent) {
+                bgColor = 'transparent';
+            }
+
+            let neonStyle = '';
+            if (isNeon) {
+                neonStyle = `box-shadow: 0 0 10px ${neonColor}, 0 0 20px ${neonColor}, inset 0 0 10px ${neonColor}; border: 2px solid ${neonColor};`;
+            }
+
+            let fontImport = '';
+            if (googleFontName) {
+                fontImport = `@import url('https://fonts.googleapis.com/css2?family=${googleFontName}&display=swap');`;
+            }
+
+            const innerHTML = `
             <!DOCTYPE html>
             <html>
             <head>
             <style>
+                ${fontImport}
                 ::-webkit-scrollbar { width: 8px; }
                 ::-webkit-scrollbar-track { background: transparent; }
                 ::-webkit-scrollbar-thumb { background: rgba(136, 136, 136, 0.4); border-radius: 10px; }
                 ::-webkit-scrollbar-thumb:hover { background: rgba(136, 136, 136, 0.7); }
                 body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
                 .scroll-container {
-                    width: 100vw; height: 100vh; overflow-y: auto; background: transparent; color: #2d3436; padding: 20px; box-sizing: border-box; border-radius: 12px; box-shadow: 0 0 10px #2ab775, 0 0 20px #2ab775, inset 0 0 10px #2ab775; border: 2px solid #2ab775;
+                    width: 100vw; height: 100vh; overflow-y: auto; background: ${bgColor}; color: ${textColor}; padding: 20px; box-sizing: border-box; border-radius: 12px; ${neonStyle};
                 }
                 
-                /* Основные настройки текста */
-                .content { font-family: 'Trebuchet MS', sans-serif !important; line-height: 1.6; font-size: 25px; }
-                
-                /* Принудительно заставляем все элементы наследовать шрифт, сбрасывая мусорные стили Word */
+                /* НОВЫЕ ПРАВИЛА: Принудительный сброс стилей Word */
+                .content { font-family: ${fontFamily} !important; line-height: 1.6; font-size: ${fontSize}px; }
                 .content span, .content p, .content div, .content td, .content a, .content u, .content i, .content b {
                     font-size: inherit !important;
                     font-family: inherit !important;
                 }
-                
-                /* Делаем заголовки пропорционально больше основного текста */
                 .content h1, .content h1 span { font-size: 1.3em !important; font-weight: bold; }
                 .content h2, .content h2 span { font-size: 1.15em !important; font-weight: bold; }
             </style>
             </head>
             <body>
-                <div class=&quot;scroll-container&quot;>
-                    <div class=&quot;content&quot;>
-                        <p class=&quot;MsoNormal&quot; align=&quot;center&quot; style=&quot;text-align:center&quot;><v:shapetype id=&quot;_x0000_t75&quot; coordsize=&quot;21600,21600&quot; o:spt=&quot;75&quot; o:preferrelative=&quot;t&quot; path=&quot;m@4@5l@4@11@9@11@9@5xe&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:stroke joinstyle=&quot;miter&quot;>
- <v:formulas>
-  <v:f eqn=&quot;if lineDrawn pixelLineWidth 0&quot;>
-  <v:f eqn=&quot;sum @0 1 0&quot;>
-  <v:f eqn=&quot;sum 0 0 @1&quot;>
-  <v:f eqn=&quot;prod @2 1 2&quot;>
-  <v:f eqn=&quot;prod @3 21600 pixelWidth&quot;>
-  <v:f eqn=&quot;prod @3 21600 pixelHeight&quot;>
-  <v:f eqn=&quot;sum @0 0 1&quot;>
-  <v:f eqn=&quot;prod @6 1 2&quot;>
-  <v:f eqn=&quot;prod @7 21600 pixelWidth&quot;>
-  <v:f eqn=&quot;sum @8 21600 0&quot;>
-  <v:f eqn=&quot;prod @7 21600 pixelHeight&quot;>
-  <v:f eqn=&quot;sum @10 21600 0&quot;>
- </v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:f></v:formulas>
- <v:path o:extrusionok=&quot;f&quot; gradientshapeok=&quot;t&quot; o:connecttype=&quot;rect&quot;>
- <o:lock v:ext=&quot;edit&quot; aspectratio=&quot;t&quot;>
-</o:lock></v:path></v:stroke></v:shapetype><v:shape id=&quot;_x0000_s1040&quot; type=&quot;#_x0000_t75&quot; alt=&quot;Изображение пина-истории&quot; style=&quot;position:absolute;left:0;text-align:left;margin-left:-62.65pt;
- margin-top:-58.5pt;width:611.1pt;height:865.8pt;z-index:-11;visibility:visible;
- mso-wrap-style:square;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;
- mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;
- mso-position-horizontal:absolute;mso-position-horizontal-relative:text;
- mso-position-vertical:absolute;mso-position-vertical-relative:text&quot;>
- <v:imagedata src=&quot;file:///C:\Users\B215~1\AppData\Local\Temp\msohtmlclip1\01\clip_image001.jpg&quot; o:title=&quot;Изображение пина-истории&quot;>
-</v:imagedata></v:shape><b><span style=&quot;font-size:12.0pt;
-line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;color:#1F4E79&quot;>Из
-онлайна в свой кабинет</span></b><span style=&quot;font-size:12.0pt;line-height:
-115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; align=&quot;center&quot; style=&quot;text-align:center&quot;><i><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Пошаговый
-план открытия небольшого образовательного пространства</span></i><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></p>
-
-<div align=&quot;right&quot;>
-
-<table class=&quot;MsoTableGrid&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;border-collapse:collapse;border:none;mso-border-alt:solid windowtext .5pt;
- mso-yfti-tbllook:1184;mso-padding-alt:0cm 5.4pt 0cm 5.4pt&quot;>
- <tbody><tr>
-  <td width=&quot;756&quot; valign=&quot;top&quot; style=&quot;width:453.55pt;border:solid windowtext 1.0pt;
-  mso-border-alt:solid windowtext .5pt;background:#EAF2F8;padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Эта методичка
-  подойдет репетиторам и преподавателям, которые ведут занятия лично и хотят
-  открыть свой небольшой кабинет без найма сотрудников. Внутри — практические
-  шаги по оформлению, выбору помещения, оснащению, финансовому расчету и
-  продвижению. Юридические и налоговые вопросы важно дополнительно проверять
-  под ваш регион, формат работы и актуальные требования.<o:p></o:p></span></p>
-  </td>
- </tr>
-</tbody></table>
-
-</div>
-
-<p class=&quot;MsoNormal&quot; style=&quot;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>&nbsp;</span><span style=&quot;color: rgb(31, 78, 121); font-family: &quot;Times New Roman&quot;, &quot;serif&quot;; font-size: 12pt;&quot;>Блок
-1. Юридическая и организационная база</span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>С чего начать. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Для
-мягкого старта обычно рассматривают два формата: самозанятость (НПД) и ИП.
-Самозанятость удобна простым учетом и быстрым запуском, но для аренды
-коммерческого помещения собственники иногда охотнее работают с ИП. Если вы
-планируете развивать кабинет как устойчивый офлайн-формат, ИП часто оказывается
-более удобным вариантом.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Система
-налогообложения. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Если вы регистрируете ИП, заранее
-сравните доступные режимы налогообложения для своего региона. На практике
-многим преподавателям подходит патентная система, но условия, стоимость патента
-и порядок уменьшения налога зависят от региона и текущих правил. Перед запуском
-лучше свериться с бухгалтером или налоговым консультантом.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>ОКВЭД. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Для
-репетиторства и дополнительных занятий с детьми и взрослыми часто используют
-код 85.41 — «Образование дополнительное детей и взрослых». При необходимости
-подберите дополнительные коды под ваш формат работы.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Документы с
-клиентами. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Заранее подготовьте типовой договор на
-оказание услуг. В нем важно прописать порядок оплаты, правила отмены и переноса
-занятий, сроки действия абонемента, условия возврата средств и формат
-информирования родителей. Хороший договор — это не формальность, а ваша
-финансовая защита.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Персональные
-данные. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Если вы собираете имена детей, телефоны родителей, паспортные
-данные и другую личную информацию, продумайте порядок обработки персональных
-данных. Обычно используют отдельное согласие или приложение к договору.
-Формулировки должны быть корректными и понятными, а перечень собираемых данных
-— действительно необходимым.<o:p></o:p></span></p>
-
-<h1 style=&quot;margin-top:10.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
-0cm;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;color:#1F4E79&quot;>Блок
-2. Помещение</span><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></h1>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Локация. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>В
-небольшом городе расположение напрямую влияет на набор учеников. Лучше искать
-помещение рядом со школами, в густонаселенных районах или в точках, куда
-родителям удобно заезжать после работы. Для детей важны безопасность маршрута и
-понятная навигация.</span></p>
- <v:shape id=&quot;_x0000_s1026&quot; type=&quot;#_x0000_t202&quot; style=&quot;position: absolute; left: 0px; margin-left: -32.1pt; margin-top: 50.2pt; width: 184.25pt; height: 34.8pt; z-index: 6;&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:textbox>
-  <table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;>
-   <tbody><tr>
-    <td><div>
-    <p class=&quot;MsoNormal&quot;><b><span style=&quot;font-size:14.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Светлана
-    Быкова <o:p></o:p></span></b></p>
-    </div>
-    </td>
-   </tr>
-  </tbody></table>
-  </v:textbox>
-</v:shape><b><span style=&quot;font-size:12.0pt;
-line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Площадь. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Для
-мини-групп из 4–6 человек обычно достаточно помещения площадью 15–20 м². Этого
-хватает для рабочих мест, доски, зоны преподавателя и базового хранения.</span><b><span style=&quot;font-size:12.0pt;
-line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Минимальные требования.
-</span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Проверьте
-вентиляцию, освещение, доступ к санузлу и возможность спокойно ожидать начало
-занятия. Даже небольшой диванчик, банкетка или стул в коридоре заметно повышают
-комфорт родителей и детей.<o:p></o:p></span><p></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Аренда. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Перед
-подписанием договора внимательно проверьте условия расторжения, повышение ставки,
-коммунальные платежи и возможность субаренды, если вы в будущем захотите делить
-кабинет с коллегой. По возможности фиксируйте стоимость аренды на длительный
-срок.<o:p></o:p></span></p>
-
-<h1 style=&quot;margin-top:10.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
-0cm;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;color:#1F4E79&quot;>Блок
-3. Оснащение кабинета</span><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></h1>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Рабочие места. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Выбирайте
-столы и стулья под возраст детей. Для мини-групп удобны парты на двоих или
-компактные столы, за которыми легко организовать совместную работу.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Техника. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Современный
-кабинет сложно представить без экрана для вывода материалов. Это может быть
-телевизор, монитор, проектор или интерактивная панель — выбирайте формат под
-бюджет и сценарии занятий. Техника нужна не «для красоты», а для презентаций,
-электронных учебников, интерактивных заданий и визуального объяснения
-материала.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Ноутбук и
-интернет. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Ноутбук и стабильный интернет — базовая
-инфраструктура кабинета. До подписания аренды проверьте качество связи: если вы
-используете онлайн-платформы и интерактивы, слабый интернет будет мешать
-каждому занятию.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Маркерная доска.
-</span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Даже
-при хорошем техническом оснащении маркерная доска остается рабочим инструментом
-на каждом уроке.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Хранение. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Продумайте
-закрытое хранение для распечаток, пособий, геометрических наборов и канцелярии.
-Порядок в кабинете напрямую влияет на ощущение профессионализма.<o:p></o:p></span></p>
-
-<h1 style=&quot;margin-top:10.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
-0cm;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;color:#1F4E79&quot;>Блок
-4. Финансовый план</span><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></h1>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Разовые расходы.
-</span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>До
-старта составьте смету первого месяца: аренда и обеспечительный платеж,
-косметический ремонт при необходимости, мебель, техника, печать материалов и
-бытовые мелочи.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Ежемесячные
-расходы. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Отдельно выпишите постоянные расходы: аренда, налоги
-и взносы, коммунальные платежи, интернет, расходные материалы, вода, чай и
-прочие регулярные закупки.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Точка
-безубыточности. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Посчитайте, сколько абонементов или
-учеников вам нужно, чтобы кабинет не работал в минус. Для этого разделите
-ежемесячные расходы на чистый доход с одного абонемента. Такой расчет помогает
-понять, когда проект становится устойчивым, а когда пока держится только на
-энтузиазме.</span></p><p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><span style=&quot;color: rgb(31, 78, 121); font-family: &quot;Times New Roman&quot;, &quot;serif&quot;; font-size: 12pt;&quot;>Блок
-5. Маркетинг и набор учеников.</span></p><p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b style=&quot;font-family: inherit;&quot;><span style=&quot;font-size:12.0pt;
-line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Быстрые инструменты на
-старте. </span></b><span style=&quot;font-size: 12pt; line-height: 115%; font-family: &quot;Times New Roman&quot;, &quot;serif&quot;;&quot;>На первом этапе хорошо работают рекомендации, акция
-«Приведи друга», семейные скидки и бонусы за длительную оплату. Важно, чтобы
-скидки помогали удержанию клиентов, а не обесценивали вашу работу.</span></p><p></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><v:shape id=&quot;_x0000_s1038&quot; type=&quot;#_x0000_t75&quot; alt=&quot;Изображение пина-истории&quot; style=&quot;position:absolute;left:0;text-align:left;margin-left:-62.05pt;
- margin-top:-89.1pt;width:611.4pt;height:866.4pt;z-index:-13;visibility:visible;
- mso-wrap-style:square;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;
- mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;
- mso-position-horizontal:absolute;mso-position-horizontal-relative:text;
- mso-position-vertical:absolute;mso-position-vertical-relative:text&quot;>
- <v:imagedata src=&quot;file:///C:\Users\B215~1\AppData\Local\Temp\msohtmlclip1\01\clip_image001.jpg&quot; o:title=&quot;Изображение пина-истории&quot;>
-</v:imagedata></v:shape><b><span style=&quot;font-size:12.0pt;
-line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Локальное продвижение. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>В
-офлайне по-прежнему работают флаеры, листовки, визитки и партнерства с местными
-точками, где бывает ваша аудитория: магазинами канцтоваров, детскими центрами,
-кофейнями и семейными пространствами.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Знакомство со
-школами. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Если формат позволяет, аккуратно выстраивайте
-отношения с классными руководителями и администраторами ближайших школ. Иногда
-даже короткое знакомство или участие в родительском собрании заметно повышает
-доверие.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Соцсети и карты.
-</span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Обязательно
-оформите карточки на картах и в городских сервисах: добавьте фотографии
-кабинета, график работы, контакты и ссылку на запись. Просите родителей
-оставлять отзывы. Параллельно показывайте в соцсетях путь открытия: ремонт,
-подготовку кабинета, первые материалы и отзывы учеников.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Полезные встречи
-для родителей. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Хорошо работают бесплатные мини-встречи
-или открытые занятия для родителей. Это мягкий способ познакомить аудиторию с вашим
-подходом, показать кабинет и продемонстрировать экспертность без прямой
-продажи.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Реклама на
-автомобиле. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Если вы часто ездите по городу,
-брендирование автомобиля может дать дополнительный локальный охват. Достаточно
-короткого понятного сообщения, контакта и QR-кода. Важно не перегружать макет
-текстом.<o:p></o:p></span></p>
-
-<h1 style=&quot;margin-top:10.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
-0cm;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;color:#1F4E79;
-font-weight:normal&quot;>Блок 6. Сервис и клиентский опыт</span><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;
-color:#1F4E79&quot;><o:p></o:p></span></h1>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;368&quot; data-end=&quot;707&quot;><u>Первое
-впечатление.</u> Для небольшого образовательного кабинета сервис начинается
-задолго до первого занятия. Родитель оценивает не только ваши знания и подход,
-но и то, насколько легко с вами связаться, удобно записаться и понятно получить
-ответы на вопросы. Быстрая, спокойная и доброжелательная коммуникация уже на
-старте повышает доверие.<o:p></o:p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;709&quot; data-end=&quot;1070&quot;><u>Путь
-нового клиента.</u> Продумайте путь клиента от первого сообщения до покупки
-абонемента. Что вы пишете в ответ на заявку, как предлагаете время, когда
-отправляете адрес, как объясняете, что взять с собой, и что происходит после
-пробного занятия. Чем понятнее этот маршрут, тем меньше тревоги у родителей и
-тем выше вероятность, что они останутся с вами надолго. Не забудьте обращаться
-к человеку по имени.<o:p></o:p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;1072&quot; data-end=&quot;1457&quot;><u>Коммуникация
-с родителями.</u> Родителям важно чувствовать, что ребенок не просто посещает
-занятия, а действительно движется вперед. Для этого полезно заранее выбрать
-удобный формат обратной связи: короткий комментарий после урока, сообщение раз
-в неделю или небольшой итог по абонементу. Не обязательно писать много — важнее
-регулярность, ясность и ощущение внимания к результату ребенка.<o:p></o:p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;1459&quot; data-end=&quot;1825&quot;><u>Понятные
-правила.</u> Хороший сервис строится не только на доброжелательности, но и на
-прозрачных правилах. Заранее обозначьте порядок оплаты, условия переноса и
-отмены занятий, сроки действия абонемента, возможность заморозки и правила
-возврата. Когда эти условия понятны заранее, снижается количество спорных
-ситуаций и вам проще сохранять спокойные рабочие отношения.<o:p></o:p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;1827&quot; data-end=&quot;2157&quot;><u>Комфорт
-в кабинете.</u> Сервис ощущается в мелочах. Чистота, порядок, вода, салфетки, конфетки,
-запасные ручки, понятная навигация, место для ожидания и аккуратная организация
-пространства работают на вашу репутацию не хуже рекламы. Даже небольшой кабинет
-может производить профессиональное впечатление, если в нем удобно и спокойно
-находиться.<o:p></o:p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;2159&quot; data-end=&quot;2488&quot;><v:shape id=&quot;_x0000_s1033&quot; type=&quot;#_x0000_t202&quot; style=&quot;position:absolute;left:0;
- text-align:left;margin-left:308.8pt;margin-top:42.75pt;width:224.95pt;
- height:34.8pt;z-index:13;mso-height-percent:200;mso-height-percent:200;
- mso-width-relative:margin;mso-height-relative:margin&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:textbox>
-  </v:textbox></v:shape></p><br>
-  <v:shape id=&quot;_x0000_s1028&quot; type=&quot;#_x0000_t202&quot; style=&quot;position: absolute; left: 0px; margin-left: -8.1pt; margin-top: 42.75pt; width: 184.3pt; height: 34.8pt; z-index: 8;&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:textbox>
-  <table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;>
-   <tbody><tr>
-    <td><div>
-    <p class=&quot;MsoNormal&quot;><b><span style=&quot;font-size:14.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Светлана
-    Быкова <o:p></o:p></span></b></p>
-    </div>
-    </td>
-   </tr>
-  </tbody></table>
-  </v:textbox>
-</v:shape><u>Сопровождение после занятия.</u> Полезно продумать, что получает
-семья после урока. Это может быть домашнее задание, краткий комментарий по теме
-занятия, напоминание о следующей встрече или рекомендация, на что обратить
-внимание дома. Такое сопровождение усиливает ценность занятий и помогает
-родителям видеть результат вашей работы.<o:p></o:p><p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;2490&quot; data-end=&quot;2806&quot;><v:shape id=&quot;_x0000_s1032&quot; type=&quot;#_x0000_t202&quot; style=&quot;position:absolute;left:0;
- text-align:left;margin-left:305.2pt;margin-top:646.9pt;width:224.95pt;
- height:34.8pt;z-index:12;mso-height-percent:200;mso-height-percent:200;
- mso-width-relative:margin;mso-height-relative:margin&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:textbox>
-  </v:textbox></v:shape></p>
-  <v:shape id=&quot;_x0000_s1037&quot; type=&quot;#_x0000_t75&quot; alt=&quot;Изображение пина-истории&quot; style=&quot;position: absolute; left: 0px; margin-left: -64.45pt; margin-top: -104.3pt; width: 611.7pt; height: 865.2pt; z-index: -14; visibility: visible;&quot;>
- <v:imagedata src=&quot;file:///C:\Users\B215~1\AppData\Local\Temp\msohtmlclip1\01\clip_image001.jpg&quot; o:title=&quot;Изображение пина-истории&quot;>
-</v:imagedata></v:shape><u>Работа с обратной связью.</u> Важно не только собирать отзывы, но
-и использовать их для улучшения сервиса. Спрашивайте родителей, удобно ли
-расписание, понятны ли правила, комфортно ли ребенку в кабинете. Замечания не
-всегда означают критику — часто это источник идей для улучшения, которые
-повышают лояльность клиентов.<o:p></o:p><p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;2808&quot; data-end=&quot;3213&quot;><u>Удержание
-клиентов.</u> Для устойчивой работы кабинета важно не только привлечь ученика,
-но и сделать так, чтобы семья захотела остаться. На это влияют атмосфера,
-предсказуемость, понятные правила, регулярная обратная связь и внимание к
-деталям. Дополнительно могут работать бонусы для постоянных клиентов, семейные
-предложения, открытые занятия, небольшие подарочки к праздникам и знаки
-внимания, которые помогают укреплять доверие.<o:p></o:p></p>
-
-<p style=&quot;margin-top:0cm;margin-right:0cm;margin-bottom:2.0pt;margin-left:0cm;
-text-align:justify;text-justify:inter-ideograph&quot; data-start=&quot;3215&quot; data-end=&quot;3572&quot;><u>Роль
-преподавателя.</u> В маленьком образовательном пространстве преподаватель и
-есть главный носитель сервиса. Пунктуальность, спокойный тон общения,
-готовность кабинета до прихода учеников, уважение к времени родителей и
-предсказуемость в коммуникации создают ощущение надежности. Именно это часто
-становится причиной, по которой клиента рекомендуют знакомым.</p>
-
-<h1 style=&quot;margin-top:10.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
-0cm;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;color:#1F4E79&quot;>Блок
-7. Психологическая опора</span><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></h1>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Как снизить
-тревогу. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Перед запуском полезно письменно ответить себе на
-три вопроса: какой у меня самый неприятный сценарий, насколько он реально
-критичен и какой лучший результат я могу получить. Такой прием помогает вернуть
-опору и снизить ощущение неопределенности.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Зачем вы это
-делаете. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Открытие кабинета — это не только про аренду и
-мебель. Это шаг к большей самостоятельности, к более устойчивому доходу и к
-пространству, которое отражает ваш подход к обучению.<o:p></o:p></span></p>
-
-<h1 style=&quot;margin-top:10.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
-0cm;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;color:#1F4E79&quot;>Блок
-8. Чек-лист безопасности</span><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></h1>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Лицензия. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Если
-вы ведете занятия лично и работаете без найма преподавателей, требования к
-лицензированию могут отличаться от формата полноценного образовательного
-центре. Но как только в работе появляются другие преподаватели, вопрос лицензии
-нужно проверять особенно внимательно.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Пожарная и
-бытовая безопасность. </span></b><span style=&quot;font-size:12.0pt;line-height:
-115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Даже для небольшого кабинета важны
-базовые вещи: огнетушитель, чистота, регулярное проветривание, исправное
-освещение и понятный доступ к выходу. Это не только вопрос проверок, но и
-вопрос вашей реальной безопасности.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Налоговая
-дисциплина. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;
-font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Каким бы ни был ваш режим
-налогообложения, главная задача — аккуратно вести учет оплат и не откладывать
-документы «на потом». Спокойствие в этом вопросе рождается из порядка, а не из
-надежды, что никто ничего не спросит.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><b><span style=&quot;font-size:
-12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Персональные
-данные. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Если вы работаете с персональными данными родителей
-и детей, проверьте, какие согласия, уведомления и внутренние документы нужны
-именно в вашем случае. Лучше один раз корректно настроить этот процесс, чем
-потом исправлять ошибки.<o:p></o:p></span></p>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt;text-align:justify;text-justify:
-inter-ideograph&quot;><v:shape id=&quot;_x0000_s1029&quot; type=&quot;#_x0000_t202&quot; style=&quot;position:absolute;
- left:0;text-align:left;margin-left:-.3pt;margin-top:58.9pt;width:184.3pt;
- height:34.8pt;z-index:9;mso-width-percent:400;mso-height-percent:200;
- mso-width-percent:400;mso-height-percent:200;mso-width-relative:margin;
- mso-height-relative:margin&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:textbox>
-  </v:textbox></v:shape></p><b><span style=&quot;font-size:12.0pt;
-line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><br>Работа с коллегой. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Если
-вы делите помещение с другим преподавателем, отношения нужно оформить на
-бумаге. Важно, чтобы у каждого были свои ученики, свои расчеты и понятный
-статус, а условия использования помещения были согласованы с собственником.<o:p></o:p></span><p></p>
-
-<h1 style=&quot;margin-top:10.0pt;margin-right:0cm;margin-bottom:6.0pt;margin-left:
-0cm;text-align:justify;text-justify:inter-ideograph&quot;><v:shape id=&quot;Рисунок_x0020_1&quot; o:spid=&quot;_x0000_s1036&quot; type=&quot;#_x0000_t75&quot; alt=&quot;Изображение пина-истории&quot; style=&quot;position:absolute;left:0;text-align:left;margin-left:-64.45pt;
- margin-top:-81.9pt;width:610.5pt;height:866.4pt;z-index:-15;visibility:visible;
- mso-wrap-style:square;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;
- mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;
- mso-position-horizontal:absolute;mso-position-horizontal-relative:text;
- mso-position-vertical:absolute;mso-position-vertical-relative:text&quot;>
- <v:imagedata src=&quot;file:///C:\Users\B215~1\AppData\Local\Temp\msohtmlclip1\01\clip_image001.jpg&quot; o:title=&quot;Изображение пина-истории&quot;>
-</v:imagedata></v:shape><v:shape id=&quot;_x0000_s1030&quot; type=&quot;#_x0000_t202&quot; style=&quot;position:absolute;
- left:0;text-align:left;margin-left:-32.1pt;margin-top:664.5pt;width:184.25pt;
- height:34.8pt;z-index:10;mso-width-percent:400;mso-height-percent:200;
- mso-width-percent:400;mso-height-percent:200;mso-width-relative:margin;
- mso-height-relative:margin&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:textbox>
-  <table cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot;>
-   <tbody><tr>
-    <td><div>
-    <p class=&quot;MsoNormal&quot;><b><span style=&quot;font-size:14.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Свет<o:p></o:p></span></b></p>
-    </div>
-    </td>
-   </tr>
-  </tbody></table>
-  </v:textbox>
-</v:shape><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;
-color:#1F4E79&quot;>Итог: с чего начать сейчас.</span><span style=&quot;font-size:12.0pt;
-line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;><o:p></o:p></span></h1>
-
-<p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:2.0pt&quot;><b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>План
-действий. </span></b><span style=&quot;font-size:12.0pt;line-height:115%;font-family:
-&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>1. Определите формат регистрации и проверьте его под
-свой регион.<br>
-2. Посчитайте стартовый бюджет и точку безубыточности.<br>
-3. Подберите 3–5 реальных вариантов помещения.<br>
-4. Подготовьте договор и пакет базовых документов.<br>
-5. Продумайте первые каналы набора учеников и начните рассказывать об открытии
-заранее.<o:p></o:p></span></p>
-
-<h2 style=&quot;text-align:justify;text-justify:inter-ideograph&quot;><span style=&quot;font-size:12.0pt;line-height:115%;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Мини-шаблон
-для финансового расчета<o:p></o:p></span></h2>
-
-<table class=&quot;MsoTableGrid&quot; border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot; style=&quot;border-collapse:collapse;border:none;mso-border-alt:solid windowtext .5pt;
- mso-yfti-tbllook:1184;mso-padding-alt:0cm 5.4pt 0cm 5.4pt&quot;>
- <tbody><tr>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border:solid windowtext 1.0pt;
-  mso-border-alt:solid windowtext .5pt;background:#D9EAF7;padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Статья<o:p></o:p></span></p>
-  </td>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border:solid windowtext 1.0pt;
-  border-left:none;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
-  solid windowtext .5pt;background:#D9EAF7;padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Что вписать<o:p></o:p></span></p>
-  </td>
- </tr>
- <tr>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border:solid windowtext 1.0pt;
-  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
-  padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Разовые
-  вложения<o:p></o:p></span></p>
-  </td>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Залог, ремонт,
-  мебель, техника<o:p></o:p></span></p>
-  </td>
- </tr>
- <tr>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border:solid windowtext 1.0pt;
-  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
-  padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Постоянные
-  расходы в месяц<o:p></o:p></span></p>
-  </td>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Аренда,
-  налоги, коммунальные платежи, интернет, расходники<o:p></o:p></span></p>
-  </td>
- </tr>
- <tr>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border:solid windowtext 1.0pt;
-  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
-  padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Стоимость
-  абонемента<o:p></o:p></span></p>
-  </td>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Средний чек за
-  одного ученика в месяц<o:p></o:p></span></p>
-  </td>
- </tr>
- <tr>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border:solid windowtext 1.0pt;
-  border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
-  padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Минимум
-  учеников для нуля<o:p></o:p></span></p>
-  </td>
-  <td width=&quot;406&quot; valign=&quot;top&quot; style=&quot;width:243.65pt;border-top:none;border-left:
-  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
-  mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
-  mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt&quot;>
-  <p class=&quot;MsoNormal&quot; style=&quot;margin-bottom:0cm;margin-bottom:.0001pt;text-align:
-  justify;text-justify:inter-ideograph;line-height:normal&quot;><span style=&quot;font-size:12.0pt;font-family:&quot;Times New Roman&quot;,&quot;serif&quot;&quot;>Ежемесячные
-  расходы / чистый доход с абонемента<o:p></o:p></span></p>
-  </td>
- </tr>
-</tbody></table>
-
-<p class=&quot;MsoNormal&quot; style=&quot;text-align:justify;text-justify:inter-ideograph&quot;><v:shape id=&quot;_x0000_s1031&quot; type=&quot;#_x0000_t202&quot; style=&quot;position:absolute;left:0;
- text-align:left;margin-left:293.2pt;margin-top:437.85pt;width:224.95pt;
- height:34.8pt;z-index:11;mso-height-percent:200;
- mso-position-horizontal-relative:text;mso-position-vertical-relative:text;
- mso-height-percent:200;mso-width-relative:margin;mso-height-relative:margin&quot; filled=&quot;f&quot; stroked=&quot;f&quot;>
- <v:textbox>
-  </v:textbox></v:shape></p><br><p></p>
+                <div class="scroll-container">
+                    <div class="content">
+                        ${text}
                     </div>
                 </div>
             </body>
             </html>
-            "></iframe>
+            `;
+
+            const escapedHTML = innerHTML.replace(/"/g, '&quot;');
+            currentHtmlCode = `<iframe style="width: 100%; height: 100%; border: none; background: transparent;" srcdoc="${escapedHTML}"></iframe>`;
+            
+            // Обновляем предпросмотр
+            document.getElementById('preview-content').innerHTML = currentHtmlCode;
+            
+            // Проверяем и показываем размер кода
+            checkCodeSize(currentHtmlCode);
+        }
+
+        function copyCode() {
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = currentHtmlCode;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+
+            const btn = document.getElementById('copyBtn');
+            const originalText = btn.innerText;
+            btn.innerText = '✓ Скопировано!';
+            btn.style.background = '#ff6600'; 
+            btn.style.color = '#121212';
+            btn.style.boxShadow = '0 0 20px rgba(255, 102, 0, 0.8)';
+            setTimeout(() => { 
+                btn.innerText = originalText; 
+                btn.style.background = 'transparent';
+                btn.style.color = '#ff6600';
+                btn.style.boxShadow = '0 0 10px rgba(255, 102, 0, 0.3)';
+            }, 2500);
+        }
+
+        generateCode();
+    </script>
+</body>
+</html>
